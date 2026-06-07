@@ -2,20 +2,18 @@
   "version": 2,
   "builds": [
     {
-      "src": "web/merchant-dashboard/package.json",
+      "src": "web/**",
       "use": "@vercel/static-build",
       "config": {
-        "distDir": "dist"
+        "distDir": "dist",
+        "buildCommand": "cd web && npm install && npm run build"
       }
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/web/merchant-dashboard/$1"
+      "dest": "/web/$1"
     }
-  ],
-  "env": {
-    "VITE_API_URL": "https://your-backend.onrender.com"
-  }
+  ]
 }
