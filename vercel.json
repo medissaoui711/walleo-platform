@@ -2,18 +2,17 @@
   "version": 2,
   "builds": [
     {
-      "src": "web/**",
+      "src": "web/merchant-dashboard/package.json",
       "use": "@vercel/static-build",
       "config": {
-        "distDir": "web/dist",
-        "buildCommand": "cd web && npm install && npx --no-install tsc && npx --no-install vite build"
+        "distDir": "dist"
       }
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/web/$1"
+      "dest": "/web/merchant-dashboard/$1"
     }
   ]
 }
