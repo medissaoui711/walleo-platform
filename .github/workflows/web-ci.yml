@@ -1,0 +1,83 @@
+name: Web CI/CD
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'Web/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'Web/**'
+
+env:
+  NODE_VERSION: '18'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        cache-dependency-path: './Web/package-lock.json'
+
+    - name: Install dependencies
+      working-directory: ./Web
+      run: npm ci
+
+    - name: Run lint
+      working-directory: ./Web
+      run: npm run lint --if-present
+
+    - name: Run type check
+      working-directory: ./Web
+      run: npx tsc --noEmit
+
+    - name: Run tests
+      working-directory: ./Web
+      run: npm test --if-present
+
+    - name: Build
+      working-directory: ./Web
+      run: npm run build
+      env:
+        VITE_API_URL: ${{ secrets.VITE_API_URL }}
+
+    - name: Upload build
+      uses: actions/upload-artifact@v4
+      with:
+        name: web-dist
+        path: Web/dist/
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Build
+      working-directory: ./Web
+      run: |
+        npm ci
+        npm run build
+      env:
+        VITE_API_URL: ${{ secrets.VITE_API_URL }}
+
+    - name: Deploy to Netlify
+      uses: nwtgck/actions-netlify@v3
+      with:
+        publish-dir: './Web/dist'
+        production-branch: main
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        deploy-message: "Deploy from GitHub Actions"
+      env:
+        NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}

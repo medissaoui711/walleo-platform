@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">QR Loyalty</string>
+    <string name="wallet_title">محفظة الولاء</string>
+    <string name="wallet_title_en">Loyalty Wallet</string>
+    <string name="points_label">نقاط</string>
+    <string name="stamps_label">طوابع</string>
+    <string name="nearby_title">القريب منك</string>
+    <string name="redeem_button">استرداد</string>
+    <string name="login_title">تسجيل الدخول</string>
+    <string name="register_title">إنشاء حساب</string>
+    <string name="email_hint">البريد الإلكتروني</string>
+    <string name="password_hint">كلمة المرور</string>
+</resources>
