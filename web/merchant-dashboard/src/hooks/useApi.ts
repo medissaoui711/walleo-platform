@@ -1,74 +1,44 @@
 import { useState, useCallback } from 'react'
-import api from '../lib/api'
+import toast from 'react-hot-toast'
 
-interface AsyncState<T> {
-  data: T | null
-  loading: boolean
-  error: string | null
+interface UseApiOptions {
+  showSuccess?: boolean
+  showError?: boolean
+  successMessage?: string
 }
 
-export function useApi<T = any>(initialData: T | null = null) {
-  const [state, setState] = useState<AsyncState<T>>({
-    data: initialData,
-    loading: false,
-    error: null,
-  })
+export function useApi<T = any>() {
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [data, setData] = useState<T | null>(null)
 
-  const fetch = useCallback(async (url: string, params?: Record<string, any>) => {
-    setState((prev) => ({ ...prev, loading: true, error: null }))
-    try {
-      const res = await api.get(url, { params })
-      setState({ data: res.data, loading: false, error: null })
-      return res.data as T
-    } catch (err: any) {
-      const msg = err.response?.data?.detail || err.message || 'Request failed'
-      setState((prev) => ({ ...prev, loading: false, error: msg }))
-      return null
-    }
-  }, [])
+  const execute = useCallback(
+    async (promise: Promise<T>, options: UseApiOptions = {}) => {
+      const { showSuccess = false, showError = true, successMessage } = options
 
-  const post = useCallback(async (url: string, body?: any) => {
-    setState((prev) => ({ ...prev, loading: true, error: null }))
-    try {
-      const res = await api.post(url, body)
-      setState({ data: res.data, loading: false, error: null })
-      return res.data
-    } catch (err: any) {
-      const msg = err.response?.data?.detail || err.message || 'Request failed'
-      setState((prev) => ({ ...prev, loading: false, error: msg }))
-      return null
-    }
-  }, [])
+      setIsLoading(true)
+      setError(null)
 
-  const put = useCallback(async (url: string, body?: any) => {
-    setState((prev) => ({ ...prev, loading: true, error: null }))
-    try {
-      const res = await api.put(url, body)
-      setState({ data: res.data, loading: false, error: null })
-      return res.data
-    } catch (err: any) {
-      const msg = err.response?.data?.detail || err.message || 'Request failed'
-      setState((prev) => ({ ...prev, loading: false, error: msg }))
-      return null
-    }
-  }, [])
+      try {
+        const result = await promise
+        setData(result)
+        if (showSuccess) {
+          toast.success(successMessage || 'Operation completed successfully')
+        }
+        return result
+      } catch (err: any) {
+        const message = err.response?.data?.error || err.message || 'An error occurred'
+        setError(message)
+        if (showError) {
+          toast.error(message)
+        }
+        throw err
+      } finally {
+        setIsLoading(false)
+      }
+    },
+    []
+  )
 
-  const del = useCallback(async (url: string) => {
-    setState((prev) => ({ ...prev, loading: true, error: null }))
-    try {
-      await api.delete(url)
-      setState({ data: null, loading: false, error: null })
-      return true
-    } catch (err: any) {
-      const msg = err.response?.data?.detail || err.message || 'Request failed'
-      setState((prev) => ({ ...prev, loading: false, error: msg }))
-      return false
-    }
-  }, [])
-
-  const reset = useCallback(() => {
-    setState({ data: initialData, loading: false, error: null })
-  }, [initialData])
-
-  return { ...state, fetch, post, put, del, reset }
+  return { execute, isLoading, error, data, setData }
 }

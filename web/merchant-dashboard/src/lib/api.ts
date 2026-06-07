@@ -1,10 +1,13 @@
 import axios from 'axios'
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000',
+  baseURL: API_URL,
   headers: {
     'Content-Type': 'application/json',
   },
+  timeout: 30000,
 })
 
 api.interceptors.request.use(
@@ -25,6 +28,9 @@ api.interceptors.response.use(
       localStorage.removeItem('merchant_token')
       window.location.href = '/login'
     }
+    if (error.response?.status === 429) {
+      console.error('Rate limit exceeded. Please try again later.')
+    }
     return Promise.reject(error)
   }
 )
@@ -43,5 +49,8 @@ export const deleteCampaign = (id: number) => api.delete(`/api/v1/merchant/campa
 export const getMerchantStats = () => api.get('/api/v1/analytics/merchant/stats')
 export const getRecentActivity = () => api.get('/api/v1/analytics/merchant/recent-activity')
 export const getTopCampaigns = () => api.get('/api/v1/analytics/merchant/top-campaigns')
+
+export const createSupportTicket = (data: { subject: string; message: string }) =>
+  api.post('/api/v1/support/tickets', data)
 
 export default api
