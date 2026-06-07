@@ -4,10 +4,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview",
-    "vercel-build": "npx --no-install tsc && npx --no-install vite build"
+  "dev": "vite",
+  "build": "tsc && vite build",
+  "preview": "vite preview",
+  "vercel-build": "npm run build"
   },
   "dependencies": {
     "react": "^18.2.0",

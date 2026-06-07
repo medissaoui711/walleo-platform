@@ -1,18 +1,10 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "web/merchant-dashboard/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist"
-      }
-    }
-  ],
+  "cleanUrls": true,
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/web/merchant-dashboard/$1"
+      "dest": "/index.html"
     }
-  ]
+  ] 
 }
