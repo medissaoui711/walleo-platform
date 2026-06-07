@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "vercel-build": "npm run build"
+    "vercel-build": "npx --no-install tsc && npx --no-install vite build"
   },
   "dependencies": {
     "react": "^18.2.0",
