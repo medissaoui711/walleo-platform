@@ -1,13 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from starlette.middleware.base import BaseHTTPMiddleware
 from src.core.database import Base, engine
 from src.core.config import settings
 from src.core.exceptions import setup_exception_handlers
-from src.core.rate_limit import setup_rate_limiting, RateLimitMiddleware
 from src.routers import auth, campaigns, coupons, geofencing, analytics, merchant
-from slowapi.errors import RateLimitExceeded
-from slowapi import _rate_limit_exceeded_handler
 import json
 
 Base.metadata.create_all(bind=engine)
@@ -21,9 +17,6 @@ app = FastAPI(
 )
 
 setup_exception_handlers(app)
-setup_rate_limiting(app)
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
-app.add_middleware(BaseHTTPMiddleware, dispatch=RateLimitMiddleware())
 
 app.add_middleware(
     CORSMiddleware,
