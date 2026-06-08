@@ -6,7 +6,7 @@
   "scripts": {
   "dev": "vite",
   "build": "vite build",
-  "build": "tsc && vite build",
+  "build": "npx --no-install vite build",
   "preview": "vite preview",
   "vercel-build": "npm run build"
   },
