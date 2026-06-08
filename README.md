@@ -29,7 +29,7 @@ Walleo is a complete loyalty and digital wallet platform for multi-merchant busi
 ## Project Structure
 
 ```
-qr-loyalty/
+Walleo-platform/
 ├── Android/     # Kotlin + Jetpack Compose
 ├── backend/     # Python + FastAPI + PostgreSQL
 ├── web/         # React + TypeScript + MUI
