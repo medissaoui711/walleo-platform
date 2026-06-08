@@ -4,11 +4,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-  "dev": "vite",
-  "build": "vite build",
-  "build": "npx --no-install vite build",
-  "preview": "vite preview",
-  "vercel-build": "npm run build"
+    "dev": "vite",
+    "build": "npx --no-install vite build",
+    "preview": "vite preview",
+    "vercel-build": "npm run build"
   },
   "dependencies": {
     "react": "^18.2.0",
