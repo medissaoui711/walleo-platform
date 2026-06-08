@@ -25,6 +25,8 @@ interface Campaign {
   merchant_name_ar: string
   coupon_title: string
   coupon_title_ar: string
+  coupon_description?: string
+  coupon_description_ar?: string
   discount_code: string
   is_active: boolean
   latitude: number
@@ -178,7 +180,7 @@ export default function Campaigns() {
                     size="small"
                     onClick={() => {
                       setEditingCampaign(campaign)
-                      setFormData(campaign)
+                      setFormData({ ...campaign, coupon_description: campaign.coupon_description ?? '', coupon_description_ar: campaign.coupon_description_ar ?? '' })
                       setDialogOpen(true)
                     }}
                   >
